@@ -9,7 +9,7 @@
 Позже появятся фильтры, личный аккаунт и серверная сводка.
 
 ## Стек
-React + TypeScript + Vite
+React + TypeScript + Vite + React Router
 
 ## Версия Node
 22.21.0
