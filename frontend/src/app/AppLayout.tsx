@@ -15,6 +15,12 @@ export function AppLayout() {
           <NavLink to="/assignments/new">Создать</NavLink>
         </nav>
       </header>
+
+      <p className="storage-note" role="note">
+        Изменения хранятся только в памяти браузера. После обновления страницы
+        вернутся демонстрационные записи.
+      </p>
+
       <main>
         <Outlet />
       </main>

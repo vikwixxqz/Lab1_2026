@@ -9,3 +9,5 @@ export type Assignment = {
   priority: 'low' | 'medium' | 'high'
   course: string
 }
+
+export type AssignmentDraft = Omit<Assignment, 'id'>
