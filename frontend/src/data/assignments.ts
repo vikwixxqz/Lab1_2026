@@ -8,7 +8,7 @@ export const assignments: Assignment[] = [
     status: 'done',
     dueDate: '2026-09-30',
     priority: 'high',
-    course: 'Веб-разработка',
+    course: 'web-dev',
   },
   {
     id: 'a2',
@@ -17,7 +17,7 @@ export const assignments: Assignment[] = [
     status: 'in_progress',
     dueDate: '2026-10-12',
     priority: 'medium',
-    course: 'Алгоритмы',
+    course: 'algorithms',
   },
   {
     id: 'a3',
@@ -26,7 +26,7 @@ export const assignments: Assignment[] = [
     status: 'todo',
     dueDate: '2026-10-20',
     priority: 'low',
-    course: 'История',
+    course: 'history',
   },
   {
     id: 'a4',
@@ -35,7 +35,7 @@ export const assignments: Assignment[] = [
     status: 'todo',
     dueDate: '2026-10-08',
     priority: 'high',
-    course: 'Математика',
+    course: 'math',
   },
   {
     id: 'a5',
@@ -44,6 +44,6 @@ export const assignments: Assignment[] = [
     status: 'in_progress',
     dueDate: '2026-10-15',
     priority: 'medium',
-    course: 'Веб-разработка',
+    course: 'web-dev',
   },
 ]

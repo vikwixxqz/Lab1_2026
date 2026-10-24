@@ -7,7 +7,7 @@ export type Assignment = {
   status: AssignmentStatus
   dueDate: string
   priority: 'low' | 'medium' | 'high'
-  course: string
+  course: string // id из справочника курсов (ЛР 4)
 }
 
 export type AssignmentDraft = Omit<Assignment, 'id'>

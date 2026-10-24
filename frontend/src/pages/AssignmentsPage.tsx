@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import { AssignmentCard } from '../components/AssignmentCard'
 import type { Assignment, AssignmentStatus } from '../types/assignment'
 
+
 type AssignmentsPageProps = {
   assignments: Assignment[]
 }

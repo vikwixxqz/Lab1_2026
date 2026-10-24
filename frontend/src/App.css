@@ -556,3 +556,10 @@ section > h1 {
     grid-template-columns: 1fr;
   }
 }
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  filter: none;
+  box-shadow: none;
+}

@@ -1,0 +1,7 @@
+[
+  { "id": "web-dev", "name": "Веб-разработка" },
+  { "id": "algorithms", "name": "Алгоритмы" },
+  { "id": "math", "name": "Математика" },
+  { "id": "history", "name": "История" },
+  { "id": "english", "name": "Английский" }
+]
