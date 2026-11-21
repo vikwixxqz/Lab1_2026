@@ -159,8 +159,18 @@ export function AssignmentForm(props: AssignmentFormProps) {
       {/* --- ЛР 5: обновление справочника из Supabase без отправки формы --- */}
       {(load.status === 'loading' ||
         (load.status === 'success' && courses.length > 0)) && (
-        <button type="button" onClick={retry}
-          disabled={load.status === 'loading'}>
+        <button
+          type="button"
+          className="btn btn-ghost btn-refresh"
+          onClick={retry}
+          disabled={load.status === 'loading'}
+        >
+          <span
+            className={load.status === 'loading' ? 'refresh-icon spinning' : 'refresh-icon'}
+            aria-hidden="true"
+          >
+            ↻
+          </span>
           Обновить справочник
         </button>
       )}

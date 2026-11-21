@@ -563,3 +563,34 @@ section > h1 {
   filter: none;
   box-shadow: none;
 }
+/* ===== ЛР 5: кнопка «Обновить справочник» ===== */
+.btn-refresh {
+  justify-self: start;
+  padding: 7px 14px;
+  font-size: 0.85rem;
+}
+
+.btn-refresh:disabled {
+  opacity: 0.7;
+}
+
+.refresh-icon {
+  display: inline-block;
+  font-size: 1.05rem;
+  line-height: 1;
+  transition: transform 0.3s;
+}
+
+.btn-refresh:not(:disabled):hover .refresh-icon {
+  transform: rotate(180deg);
+}
+
+.refresh-icon.spinning {
+  animation: refresh-spin 0.8s linear infinite;
+}
+
+@keyframes refresh-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
