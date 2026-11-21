@@ -1,6 +1,10 @@
+// ===== ЛР 6: сервис личных заданий в Supabase =====
+// Доступ к строкам ограничивает RLS (owner_id = auth.uid())
+
 import { supabase } from '../lib/supabase'
 import type { Assignment, AssignmentDraft } from '../types/assignment'
 
+// --- ЛР 6: строка БД и преобразование данных (шаг 7) ---
 // Строка таблицы public.assignments (имена столбцов PostgreSQL)
 type AssignmentRow = {
   id: string
@@ -41,6 +45,7 @@ function toWrite(draft: AssignmentDraft) {
   }
 }
 
+// --- ЛР 6: чтение и создание (шаг 8) ---
 export async function getAssignments(): Promise<Assignment[]> {
   const { data, error } = await supabase
     .from('assignments')
@@ -64,6 +69,7 @@ export async function createAssignment(draft: AssignmentDraft): Promise<Assignme
   return fromRow(data)
 }
 
+// --- ЛР 6: изменение и удаление (шаг 9) ---
 export async function updateAssignment(
   id: string, draft: AssignmentDraft,
 ): Promise<void> {

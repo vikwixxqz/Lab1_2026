@@ -30,10 +30,12 @@ export function AssignmentDetailsPage({
 }: AssignmentDetailsPageProps) {
   const { id } = useParams()
   const navigate = useNavigate()
+  // --- ЛР 6: удаление в Supabase ---
   const [pending, setPending] = useState(false)
   const [deleteError, setDeleteError] = useState('')
   const assignment = assignments.find((item) => item.id === id)
 
+  // --- ЛР 6: ждём загрузки личного списка ---
   if (load.status !== 'success') {
     return <ListStatus load={load} onRetry={onRetry} />
   }

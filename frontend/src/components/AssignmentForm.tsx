@@ -14,7 +14,7 @@ export function AssignmentForm(props: AssignmentFormProps) {
   const [draft, setDraft] = useState(() => ({ ...props.initialValues }))
   const [error, setError] = useState('')
 
-  // --- ЛР 6: асинхронное сохранение в Supabase ---
+  // --- ЛР 6: асинхронное сохранение в Supabase (шаг 9) ---
   const [pending, setPending] = useState(false)
   const [submitError, setSubmitError] = useState('')
 
@@ -204,6 +204,7 @@ export function AssignmentForm(props: AssignmentFormProps) {
         </p>
       )}
 
+      {/* --- ЛР 6: ошибка сохранения в Supabase --- */}
       {submitError && (
         <p className="form-error" role="alert">
           {submitError}
@@ -211,7 +212,7 @@ export function AssignmentForm(props: AssignmentFormProps) {
       )}
 
       <div className="form-actions">
-        {/* ЛР 6: повторная отправка заблокирована на время запроса */}
+        {/* --- ЛР 6: повторная отправка заблокирована на время запроса --- */}
         <button type="submit" className="btn" disabled={!canSave || pending}>
           {pending ? 'Сохраняем…' : 'Сохранить'}
         </button>

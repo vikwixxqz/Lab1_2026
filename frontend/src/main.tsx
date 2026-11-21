@@ -5,7 +5,7 @@ import './index.css'
 
 const root = createRoot(document.getElementById('root')!)
 
-// ЛР 5: App импортируется динамически, чтобы ошибка настройки Supabase
+// --- ЛР 5: App импортируется динамически, чтобы ошибка настройки Supabase
 // (нет .env.local) была видна на странице, а не только в консоли.
 import('./App.tsx')
   .then(({ default: App }) => {
@@ -17,6 +17,7 @@ import('./App.tsx')
       </StrictMode>,
     )
   })
+  // --- ЛР 5: понятная ошибка, если нет .env.local ---
   .catch((error: unknown) => {
     const message =
       error instanceof Error ? error.message : 'Ошибка запуска приложения.'

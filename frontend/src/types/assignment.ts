@@ -12,7 +12,7 @@ export type Assignment = {
 
 export type AssignmentDraft = Omit<Assignment, 'id'>
 
-// ЛР 6: состояние загрузки личного списка из Supabase
+// --- ЛР 6: состояние загрузки личного списка из Supabase
 export type AssignmentsLoad =
   | { status: 'idle' }
   | { status: 'loading' }

@@ -1,3 +1,6 @@
+// ===== ЛР 6: защищённый маршрут (шаг 6) =====
+// Улучшает интерфейс; настоящую защиту данных выполняет RLS в базе
+
 import { Navigate, Outlet, useLocation } from 'react-router'
 import type { AuthState } from '../hooks/useAuth'
 

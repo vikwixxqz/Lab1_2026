@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import type { AuthState } from '../hooks/useAuth'
 
 export function AppLayout({ auth }: { auth: AuthState }) {
+  // --- ЛР 6: выход из текущего браузерного сеанса ---
   const [signingOut, setSigningOut] = useState(false)
   const [signOutError, setSignOutError] = useState('')
 
@@ -34,6 +35,7 @@ export function AppLayout({ auth }: { auth: AuthState }) {
           <NavLink to="/assignments/new">Создать</NavLink>
           {auth.status === 'guest' && <NavLink to="/auth">Вход</NavLink>}
         </nav>
+        {/* --- ЛР 6: email пользователя и кнопка выхода --- */}
         {auth.status === 'authenticated' && (
           <div className="user-bar">
             <span className="user-email">{auth.session.user.email}</span>
@@ -47,6 +49,7 @@ export function AppLayout({ auth }: { auth: AuthState }) {
 
       {signOutError && <p className="form-error" role="alert">{signOutError}</p>}
 
+      {/* --- ЛР 6: данные теперь хранятся в Supabase --- */}
       <p className="storage-note" role="note">
         Задания хранятся в Supabase и видны только владельцу аккаунта.
         Справочник курсов общий и доступен только для чтения.

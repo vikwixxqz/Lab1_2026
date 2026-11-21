@@ -5,7 +5,7 @@ type ListStatusProps = {
   onRetry: () => void
 }
 
-// ЛР 6: общее отображение загрузки и ошибки личного списка
+// --- ЛР 6: общее отображение загрузки и ошибки личного списка
 export function ListStatus({ load, onRetry }: ListStatusProps) {
   if (load.status === 'idle' || load.status === 'loading') {
     return <p className="placeholder" role="status">Загружаем задания…</p>

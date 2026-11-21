@@ -24,6 +24,7 @@ export function EditAssignmentPage({
   const navigate = useNavigate()
   const assignment = assignments.find((item) => item.id === id)
 
+  // --- ЛР 6: ждём загрузки личного списка ---
   if (load.status !== 'success') {
     return <ListStatus load={load} onRetry={onRetry} />
   }
@@ -55,6 +56,7 @@ export function EditAssignmentPage({
       <AssignmentForm
         key={assignment.id}
         initialValues={initialValues}
+        // --- ЛР 6: изменение в Supabase ---
         onSave={async (draft) => {
           await onUpdate(assignment.id, draft)
           navigate(`/assignments/${assignment.id}`)

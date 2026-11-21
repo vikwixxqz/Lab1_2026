@@ -1,3 +1,6 @@
+// ===== ЛР 6: состояние авторизации (шаг 4) =====
+// checking — сессия проверяется, guest — не вошёл, authenticated — вошёл
+
 import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabase'
@@ -13,6 +16,7 @@ function fromSession(session: Session | null): AuthState {
     : { status: 'guest' }
 }
 
+// --- ЛР 6: подписка на события Auth и восстановление сессии ---
 export function useAuth(): AuthState {
   const [auth, setAuth] = useState<AuthState>({ status: 'checking' })
 

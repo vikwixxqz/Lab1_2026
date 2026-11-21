@@ -1,3 +1,5 @@
+// ===== ЛР 6: страница входа и регистрации (шаг 5) =====
+
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router'
@@ -61,6 +63,7 @@ export function AuthPage({ auth }: { auth: AuthState }) {
       return
     }
 
+    // --- ЛР 6: регистрация (signUp) и вход (signInWithPassword) ---
     setPending(true)
     try {
       if (mode === 'signup') {

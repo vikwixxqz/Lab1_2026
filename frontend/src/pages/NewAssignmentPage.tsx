@@ -18,6 +18,7 @@ const emptyAssignment: AssignmentDraft = {
 export function NewAssignmentPage({ onCreate }: NewAssignmentPageProps) {
   const navigate = useNavigate()
 
+  // --- ЛР 6: создание в Supabase, затем переход к карточке ---
   async function handleSave(draft: AssignmentDraft) {
     const id = await onCreate(draft)
     navigate(`/assignments/${id}`)

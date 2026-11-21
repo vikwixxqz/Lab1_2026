@@ -28,9 +28,11 @@ function errorMessage(error: unknown): string {
 }
 
 export default function App() {
+  // --- ЛР 6: состояние авторизации (один вызов useAuth) ---
   const auth = useAuth()
   const userId = auth.status === 'authenticated' ? auth.session.user.id : null
 
+  // --- ЛР 6: личный список из Supabase (шаги 8, 10) ---
   // До входа список пуст; демонстрационные записи ЛР 2 больше не используются
   const [assignments, setAssignments] = useState<Assignment[]>([])
   const [load, setLoad] = useState<AssignmentsLoad>({ status: 'idle' })
@@ -81,6 +83,7 @@ export default function App() {
     }
   }
 
+  // --- ЛР 6: CRUD через Supabase с повторной загрузкой списка ---
   async function createAssignment(draft: AssignmentDraft): Promise<string> {
     const created = await createAssignmentRow(draft)
     await reload()
@@ -101,8 +104,10 @@ export default function App() {
     <Routes>
       <Route element={<AppLayout auth={auth} />}>
         <Route index element={<HomePage />} />
+        {/* --- ЛР 6: публичная страница входа --- */}
         <Route path="auth" element={<AuthPage auth={auth} />} />
 
+        {/* --- ЛР 6: личные страницы только после входа --- */}
         <Route element={<RequireAuth auth={auth} />}>
           <Route
             path="assignments"

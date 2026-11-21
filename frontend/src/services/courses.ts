@@ -1,6 +1,9 @@
+// ЛР 4: сервис справочника курсов
+// ЛР 5: источник заменён с JSON на Supabase
 import { supabase } from '../lib/supabase'
 import type { Course } from '../types/course'
 
+// --- ЛР 4: проверка структуры справочника ---
 function isCourse(value: unknown): value is Course {
   if (typeof value !== 'object' || value === null) return false
   return (
@@ -26,6 +29,7 @@ export function parseCourses(value: unknown): Course[] {
   return courses
 }
 
+// --- ЛР 5: справочник читается из таблицы courses в Supabase (шаг 9) ---
 export async function getCourses(signal: AbortSignal): Promise<Course[]> {
   const { data, error } = await supabase
     .from('courses')

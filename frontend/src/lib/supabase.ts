@@ -1,3 +1,6 @@
+// ===== ЛР 5: единый клиент Supabase (шаг 8) =====
+// URL и publishable key берутся из frontend/.env.local
+
 import { createClient } from '@supabase/supabase-js'
 
 const url = import.meta.env.VITE_SUPABASE_URL

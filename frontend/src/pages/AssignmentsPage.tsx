@@ -61,6 +61,7 @@ export function AssignmentsPage({ assignments, load, onRetry }: AssignmentsPageP
         </button>
       </div>
 
+      {/* --- ЛР 6: загрузка и ошибка личного списка --- */}
       {load.status !== 'success' ? (
         <ListStatus load={load} onRetry={onRetry} />
       ) : assignments.length === 0 ? (
