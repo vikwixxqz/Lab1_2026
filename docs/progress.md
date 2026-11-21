@@ -127,3 +127,56 @@ response.ok и структуры, хук useCourses, select в форме со�
 
 ### Коммит ЛР 5
 `Lab 5: add Supabase schema and reference data`
+
+
+## ЛР 6 — Авторизация и сохранение личных записей
+
+### Настройка Auth
+- Вход по email и паролю: включён (Authentication → Sign In / Providers → Email).
+- Подтверждение email: включено (настройка Supabase по умолчанию, не отключалось).
+- Локальный URL: `http://localhost:5173` — добавлен в Site URL / Redirect URLs (URL Configuration).
+
+### Миграция
+`supabase/migrations/202611210002_assignments_owner_policies.sql` (миграция ЛР 5 не изменялась):
+- `owner_id` по умолчанию `auth.uid()`;
+- `revoke all` у anon и authenticated, затем `grant select, insert, update, delete` только authenticated;
+- четыре отдельные политики: `assignments select own`, `insert own`, `update own` (USING + WITH CHECK), `delete own`.
+
+Порядок применения в SQL Editor: миграция ЛР 5 → seed.sql → миграция ЛР 6.
+
+### Модель доступа
+- `courses` читают все; изменять клиенты не могут.
+- `assignments` читает и изменяет только владелец (`auth.uid() = owner_id`); anon прав нет.
+
+### Результат
+- `hooks/useAuth.ts` — состояния checking / guest / authenticated, getSession + onAuthStateChange, отписка при размонтировании.
+- `pages/AuthPage.tsx` — режимы «Вход» и «Регистрация», pending, ошибка, сообщение о подтверждении email.
+- `app/RequireAuth.tsx` — защита списка, создания, карточки и редактирования; `/auth` публичный.
+- В шапке — email пользователя и кнопка «Выйти» (`signOut({ scope: 'local' })`).
+- `services/assignments.ts` — getAssignments, createAssignment, updateAssignment, deleteAssignment;
+  преобразование snake_case ↔ camelCase (`course` ↔ `course_id`), owner_id не отправляется.
+- App: список пуст до входа, очищается при выходе и смене пользователя, loading / error / «Повторить»;
+  после создания, изменения и удаления список загружается заново.
+- Форма: асинхронное сохранение, pending, блокировка повторной отправки, ошибка без потери черновика.
+- Демонстрационные записи ЛР 2 удалены из приложения (`src/data/assignments.ts`).
+
+### Сценарий двух аккаунтов
+1. A: создать две записи, обновить страницу, изменить одну, записать её id.
+2. Выйти: список очищается, `/assignments/<id>` перенаправляет на `/auth`. Войти как A — изменения на месте.
+3. B: список A не виден, `/assignments/<id A>` — «Задание не найдено». Создать запись B, обновить страницу.
+4. B: select с `owner_id` пользователя A — пустой результат.
+5. B: update / delete по id A — затронуто 0 строк, запись A не изменилась.
+6. B: insert с `owner_id` пользователя A — `new row violates row-level security policy`.
+7. Снова A: записи A без изменений, запись B не видна.
+8. Создание, редактирование, отмена, удаление, фильтр и справочник работают.
+
+### Проверки ошибок
+1. Неверный пароль — ошибка у формы, email сохраняется.
+2. Регистрация при включённом подтверждении — сообщение «Проверьте почту…», вход не выполняется.
+3. Личный URL без входа и во время checking — данные не видны («Проверяем сессию…» → `/auth`).
+4. Offline при загрузке и сохранении — видна ошибка, черновик не потерян, есть «Повторить».
+5. Двойное нажатие «Сохранить» — кнопка заблокирована («Сохраняем…»).
+6. `npm run build` и `npm run preview` проходят.
+
+### Коммит ЛР 6
+`Lab 6: add auth and persistent personal records`

@@ -1,19 +1,32 @@
 import { Link, useNavigate, useParams } from 'react-router'
 import { AssignmentForm } from '../components/AssignmentForm'
-import type { Assignment, AssignmentDraft } from '../types/assignment'
+import { ListStatus } from '../components/ListStatus'
+import type {
+  Assignment,
+  AssignmentDraft,
+  AssignmentsLoad,
+} from '../types/assignment'
 
 type EditAssignmentPageProps = {
   assignments: Assignment[]
-  onUpdate: (id: string, draft: AssignmentDraft) => void
+  load: AssignmentsLoad
+  onRetry: () => void
+  onUpdate: (id: string, draft: AssignmentDraft) => Promise<void>
 }
 
 export function EditAssignmentPage({
   assignments,
+  load,
+  onRetry,
   onUpdate,
 }: EditAssignmentPageProps) {
   const { id } = useParams()
   const navigate = useNavigate()
   const assignment = assignments.find((item) => item.id === id)
+
+  if (load.status !== 'success') {
+    return <ListStatus load={load} onRetry={onRetry} />
+  }
 
   if (!assignment) {
     return (
@@ -42,8 +55,8 @@ export function EditAssignmentPage({
       <AssignmentForm
         key={assignment.id}
         initialValues={initialValues}
-        onSave={(draft) => {
-          onUpdate(assignment.id, draft)
+        onSave={async (draft) => {
+          await onUpdate(assignment.id, draft)
           navigate(`/assignments/${assignment.id}`)
         }}
         onCancel={() => navigate(`/assignments/${assignment.id}`)}

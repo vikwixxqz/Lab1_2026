@@ -5,7 +5,7 @@ import { useCourses } from '../hooks/useCourses'
 
 type AssignmentFormProps = {
   initialValues: AssignmentDraft
-  onSave: (draft: AssignmentDraft) => void
+  onSave: (draft: AssignmentDraft) => Promise<void>
   onCancel: () => void
 }
 
@@ -13,6 +13,10 @@ export function AssignmentForm(props: AssignmentFormProps) {
   // --- ЛР 3: черновик ---
   const [draft, setDraft] = useState(() => ({ ...props.initialValues }))
   const [error, setError] = useState('')
+
+  // --- ЛР 6: асинхронное сохранение в Supabase ---
+  const [pending, setPending] = useState(false)
+  const [submitError, setSubmitError] = useState('')
 
   // --- ЛР 4: справочник (как useTags в методичке) ---
   const { load, retry } = useCourses()
@@ -24,8 +28,9 @@ export function AssignmentForm(props: AssignmentFormProps) {
     courses.length > 0 &&
     selectedCourseExists
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    if (pending) return
 
     // --- ЛР 4: методичка, шаг 9 ---
     if (!canSave) {
@@ -51,7 +56,18 @@ export function AssignmentForm(props: AssignmentFormProps) {
     }
 
     setError('')
-    props.onSave({ ...draft, title, description })
+
+    // --- ЛР 6: сетевой запрос после локальных проверок ---
+    try {
+      setPending(true)
+      setSubmitError('')
+      await props.onSave({ ...draft, title, description })
+    } catch (error: unknown) {
+      setSubmitError(error instanceof Error
+        ? error.message : 'Не удалось сохранить запись.')
+    } finally {
+      setPending(false)
+    }
   }
 
   return (
@@ -188,12 +204,19 @@ export function AssignmentForm(props: AssignmentFormProps) {
         </p>
       )}
 
+      {submitError && (
+        <p className="form-error" role="alert">
+          {submitError}
+        </p>
+      )}
+
       <div className="form-actions">
-        {/* disabled={!canSave} — как в методичке */}
-        <button type="submit" className="btn" disabled={!canSave}>
-          Сохранить
+        {/* ЛР 6: повторная отправка заблокирована на время запроса */}
+        <button type="submit" className="btn" disabled={!canSave || pending}>
+          {pending ? 'Сохраняем…' : 'Сохранить'}
         </button>
-        <button type="button" className="btn btn-ghost" onClick={props.onCancel}>
+        <button type="button" className="btn btn-ghost" onClick={props.onCancel}
+          disabled={pending}>
           Отмена
         </button>
       </div>

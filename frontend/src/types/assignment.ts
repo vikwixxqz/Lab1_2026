@@ -7,7 +7,14 @@ export type Assignment = {
   status: AssignmentStatus
   dueDate: string
   priority: 'low' | 'medium' | 'high'
-  course: string // id из справочника курсов (ЛР 4)
+  course: string // id из справочника курсов (в БД — course_id)
 }
 
 export type AssignmentDraft = Omit<Assignment, 'id'>
+
+// ЛР 6: состояние загрузки личного списка из Supabase
+export type AssignmentsLoad =
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { status: 'error'; message: string }
+  | { status: 'success' }

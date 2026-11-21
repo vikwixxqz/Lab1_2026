@@ -1,14 +1,20 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
 import { AssignmentCard } from '../components/AssignmentCard'
-import type { Assignment, AssignmentStatus } from '../types/assignment'
-
+import { ListStatus } from '../components/ListStatus'
+import type {
+  Assignment,
+  AssignmentStatus,
+  AssignmentsLoad,
+} from '../types/assignment'
 
 type AssignmentsPageProps = {
   assignments: Assignment[]
+  load: AssignmentsLoad
+  onRetry: () => void
 }
 
-export function AssignmentsPage({ assignments }: AssignmentsPageProps) {
+export function AssignmentsPage({ assignments, load, onRetry }: AssignmentsPageProps) {
   const [status, setStatus] = useState<AssignmentStatus | 'all'>('all')
 
   const visible = assignments.filter(
@@ -55,7 +61,9 @@ export function AssignmentsPage({ assignments }: AssignmentsPageProps) {
         </button>
       </div>
 
-      {assignments.length === 0 ? (
+      {load.status !== 'success' ? (
+        <ListStatus load={load} onRetry={onRetry} />
+      ) : assignments.length === 0 ? (
         <p className="placeholder">Заданий пока нет. Создайте первое.</p>
       ) : visible.length === 0 ? (
         <p className="placeholder">Нет заданий с выбранным статусом.</p>

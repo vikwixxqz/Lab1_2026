@@ -3,7 +3,7 @@ import { AssignmentForm } from '../components/AssignmentForm'
 import type { AssignmentDraft } from '../types/assignment'
 
 type NewAssignmentPageProps = {
-  onCreate: (draft: AssignmentDraft) => string
+  onCreate: (draft: AssignmentDraft) => Promise<string>
 }
 
 const emptyAssignment: AssignmentDraft = {
@@ -18,8 +18,8 @@ const emptyAssignment: AssignmentDraft = {
 export function NewAssignmentPage({ onCreate }: NewAssignmentPageProps) {
   const navigate = useNavigate()
 
-  function handleSave(draft: AssignmentDraft) {
-    const id = onCreate(draft)
+  async function handleSave(draft: AssignmentDraft) {
+    const id = await onCreate(draft)
     navigate(`/assignments/${id}`)
   }
 

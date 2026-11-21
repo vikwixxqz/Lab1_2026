@@ -1,9 +1,13 @@
+import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
-import type { Assignment } from '../types/assignment'
+import { ListStatus } from '../components/ListStatus'
+import type { Assignment, AssignmentsLoad } from '../types/assignment'
 
 type AssignmentDetailsPageProps = {
   assignments: Assignment[]
-  onDelete: (id: string) => void
+  load: AssignmentsLoad
+  onRetry: () => void
+  onDelete: (id: string) => Promise<void>
 }
 
 const statusLabel = {
@@ -20,11 +24,19 @@ const priorityLabel = {
 
 export function AssignmentDetailsPage({
   assignments,
+  load,
+  onRetry,
   onDelete,
 }: AssignmentDetailsPageProps) {
   const { id } = useParams()
   const navigate = useNavigate()
+  const [pending, setPending] = useState(false)
+  const [deleteError, setDeleteError] = useState('')
   const assignment = assignments.find((item) => item.id === id)
+
+  if (load.status !== 'success') {
+    return <ListStatus load={load} onRetry={onRetry} />
+  }
 
   if (!assignment) {
     return (
@@ -84,6 +96,12 @@ export function AssignmentDetailsPage({
         </div>
       </div>
 
+      {deleteError && (
+        <p className="form-error" role="alert">
+          {deleteError}
+        </p>
+      )}
+
       <div className="form-actions">
         <Link to={`/assignments/${assignment.id}/edit`} className="btn">
           Редактировать
@@ -91,14 +109,23 @@ export function AssignmentDetailsPage({
         <button
           type="button"
           className="btn btn-danger"
-          onClick={() => {
-            if (window.confirm(`Удалить задание «${assignment.title}»?`)) {
-              onDelete(assignment.id)
+          disabled={pending}
+          onClick={async () => {
+            if (!window.confirm(`Удалить задание «${assignment.title}»?`)) return
+            setPending(true)
+            setDeleteError('')
+            try {
+              await onDelete(assignment.id)
               navigate('/assignments', { replace: true })
+            } catch (error: unknown) {
+              setDeleteError(
+                error instanceof Error ? error.message : 'Не удалось удалить запись.',
+              )
+              setPending(false)
             }
           }}
         >
-          Удалить
+          {pending ? 'Удаляем…' : 'Удалить'}
         </button>
         <Link to="/assignments" className="btn btn-ghost">
           ← К списку
