@@ -22,7 +22,7 @@ React + TypeScript + Vite + React Router + Supabase (supabase-js)
 - `VITE_SUPABASE_URL`
 - `VITE_SUPABASE_PUBLISHABLE_KEY`
 
-Во frontend допустим только publishable key. Secret key, service_role и пароль базы во frontend и Git не помещаются.
+Во frontend допустим только publishable key. 
 
 ## Источник данных
 - Справочник курсов (`courses`) читается из Supabase.
