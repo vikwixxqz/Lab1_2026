@@ -78,5 +78,52 @@ response.ok и структуры, хук useCourses, select в форме со�
 В записи хранится id курса, в форме показывается name.
 Пока справочник не загружен или курс не выбран — сохранение недоступно.
 
-### Коммит ЛР 3
+### Коммит ЛР 4
 `Lab 4: load reference data over HTTP`
+
+## ЛР 5 — Схема данных и справочник в Supabase
+
+### Схема
+| Таблица | Назначение | Ключ | Связь | Данные |
+|---|---|---|---|---|
+| `courses` | справочник курсов (id, name) | `id text` PK | — | публичные (только чтение) |
+| `assignments` | задания: поля формы ЛР 3 + owner_id, created_at | `id uuid` PK | `course_id → courses.id` (on update cascade, on delete restrict), `owner_id → auth.users.id` (on delete cascade) | личные (пользователя) |
+
+Ограничения: NOT NULL обязательных полей, UNIQUE имени курса, CHECK непустых id/name курса,
+длина названия 3–100, допустимые status и priority, для `done` описание не пустое.
+Поле `course` во frontend соответствует `course_id` в БД (преобразование — при переносе заданий в ЛР 6).
+
+### Доступ
+- RLS включён на обеих таблицах, все права anon/authenticated отозваны.
+- `courses`: `grant select` + политика `courses are publicly readable` (for select, using true).
+- `assignments`: прав и политик для клиентских ролей нет — закрыта до ЛР 6.
+
+### Порядок применения
+1. SQL Editor → `supabase/migrations/202611210001_initial_schema.sql` (полностью, один раз).
+2. SQL Editor → `supabase/seed.sql` (UPSERT, повторный запуск не создаёт новых id).
+3. `frontend/.env.local` по образцу `.env.example`, перезапуск Vite.
+
+### Результат
+- Установлен `@supabase/supabase-js`, единый клиент `frontend/src/lib/supabase.ts`.
+- `getCourses` читает `courses` из Supabase (`select('id, name').order('name')`, AbortSignal),
+  проверяет `error` и структуру через `parseCourses`.
+- `public/demo/courses.json` удалён, скрытого fallback нет.
+- В форме добавлена кнопка «Обновить справочник» (retry без отправки формы и без потери черновика).
+- Без `.env.local` на странице показывается ошибка настройки.
+
+### Проверки
+1. Чтение: в Network запрос `…/rest/v1/courses?select=id,name&order=name.asc`, в select — курсы из БД;
+   в записи сохраняется id, показывается name.
+2. Ошибка: неверное имя таблицы в сервисе → сообщение об ошибке и «Повторить»; черновик сохраняется.
+3. Пустой результат: `delete from public.courses;` → «Курсов пока нет»; повторный seed → «Повторить» / «Обновить справочник».
+4. Изменение name через SQL (`update public.courses set name = 'Веб-разработка (React)' where id = 'web-dev';`)
+   → «Обновить справочник» показывает новое имя при прежнем id; затем name возвращён seed.
+5. Ограничения: пустой id, пустое name, повтор id отклоняются; вставка задания с несуществующим
+   owner_id / course_id отклоняется по FK. Таблица assignments пуста.
+6. Запрет записи: insert/update/delete в `courses` и select из `assignments` от anon/authenticated →
+   `permission denied` (42501).
+7. CRUD, отмена, фильтр и маршруты ЛР 2–3 работают; задания по-прежнему локальные.
+8. `npm run build` проходит с проверкой TypeScript.
+
+### Коммит ЛР 5
+`Lab 5: add Supabase schema and reference data`

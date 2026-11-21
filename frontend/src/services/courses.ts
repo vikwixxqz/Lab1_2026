@@ -1,3 +1,4 @@
+import { supabase } from '../lib/supabase'
 import type { Course } from '../types/course'
 
 function isCourse(value: unknown): value is Course {
@@ -25,16 +26,18 @@ export function parseCourses(value: unknown): Course[] {
   return courses
 }
 
-const coursesUrl = `${import.meta.env.BASE_URL}demo/courses.json`
-
 export async function getCourses(signal: AbortSignal): Promise<Course[]> {
-  const response = await fetch(coursesUrl, {
-    signal,
-    cache: 'no-store',
-  })
-  if (!response.ok) {
-    throw new Error(`Не удалось загрузить курсы: HTTP ${response.status}`)
+  const { data, error } = await supabase
+    .from('courses')
+    .select('id, name')
+    .order('name')
+    .abortSignal(signal)
+
+  if (signal.aborted) {
+    throw new DOMException('Запрос отменён', 'AbortError')
   }
-  const value: unknown = await response.json()
-  return parseCourses(value)
+  if (error) {
+    throw new Error(`Не удалось загрузить курсы: ${error.message}`)
+  }
+  return parseCourses(data)
 }

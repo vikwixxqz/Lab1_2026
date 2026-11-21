@@ -15,7 +15,7 @@ export function AssignmentForm(props: AssignmentFormProps) {
   const [error, setError] = useState('')
 
   // --- ЛР 4: справочник (как useTags в методичке) ---
-    const { load, retry } = useCourses()
+  const { load, retry } = useCourses()
   const courses = load.status === 'success' ? load.data : []
   const selectedCourseExists = courses.some((c) => c.id === draft.course)
 
@@ -154,6 +154,15 @@ export function AssignmentForm(props: AssignmentFormProps) {
             Повторить
           </button>
         </div>
+      )}
+
+      {/* --- ЛР 5: обновление справочника из Supabase без отправки формы --- */}
+      {(load.status === 'loading' ||
+        (load.status === 'success' && courses.length > 0)) && (
+        <button type="button" onClick={retry}
+          disabled={load.status === 'loading'}>
+          Обновить справочник
+        </button>
       )}
 
       {load.status === 'success' &&
